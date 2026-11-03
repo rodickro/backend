@@ -14,5 +14,5 @@ con.connect(function (err) {
     if (err) throw err;
     console.log("Database Connected!");
 });
-
+export default con;
 
