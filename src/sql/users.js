@@ -1,0 +1,1 @@
+const insertUser = 'INSERT INTO usuario (username, email, password) VALUES ($1, $2, $3)';
