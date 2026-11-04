@@ -4,5 +4,5 @@ import principalController from '../controllers/principal.controller.js';
 
 const routes = express.Router();
 
-routes.get('/', principalController.getPrincipal);
+routes.get('/', principalController.callAllProducts);
 export default  routes;
