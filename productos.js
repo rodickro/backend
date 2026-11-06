@@ -69,4 +69,4 @@ const listaprendas = [
   }
 ];
 
-module.exports = listaprendas;
+export default listaprendas;
