@@ -43,17 +43,17 @@ const loginController = async (req, res) => {
 
 const registerController = (req, res) => {
 
-    const { id_rol, correo, contraseña, estado, fecha_registro } = req.body;
+    const { nombres, apellidos, dni, telefono } = req.body;
 
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(contraseña, salt);
 
-    database.query(queryUsers.insertUser, [id_rol, correo, hashedPassword, estado, fecha_registro], (error, results) => {
+    database.query(queryUsers.insertClient, [nombres, apellidos, dni, telefono], (error, results) => {
         if (error) {
-            console.error('Error inserting user:', error);
-            res.status(500).json({ error: 'Error inserting user' });
+            console.error('Error inserting client:', error);
+            res.status(500).json({ error: 'Error inserting client' });
         } else {
-            res.status(201).json({ message: 'User registered successfully', userId: results.insertId });
+            res.status(201).json({ message: 'Client registered successfully', clientId: results.insertId });
         }
     });
 
