@@ -1,14 +1,14 @@
-
 import express from 'express';
-import principalRoutes from './principal.routes.js';
-import LoginRoutes from './Login.routes.js';
+import principalRoute from './principal.route.js';
+import LoginRoute from './Login.route.js';
+import RegisterRoute from './register.route.js';
+
 
 const router = express.Router();
 
-// Rutas de la página principal
-router.use('/principal', principalRoutes);
+router.use('/principal', principalRoute);
+router.use('/login', LoginRoute);
+router.use('/register', RegisterRoute);
 
-// Rutas de autenticación
-router.use('/', LoginRoutes);
 
 export default router;
