@@ -10,7 +10,7 @@ const loginController = async (req, res) => {
     try {
 
         const [correos] = await database.promise().query(
-            'SELECT * FROM usuario WHERE correo = ?',
+            'SELECT * FROM cliente WHERE correo = ?',
             [correo]
         );
 
@@ -20,7 +20,7 @@ const loginController = async (req, res) => {
 
         const passwordMatch = await bcrypt.compare(
             contraseña,
-            correos[0].contraseña
+            correos[0].contrasenia
         );
 
         if (!passwordMatch) {
@@ -41,23 +41,32 @@ const loginController = async (req, res) => {
 
 }
 
-const registerController = (req, res) => {
+const registerController = async (req, res) => {
 
-    const { nombres, apellidos, dni, telefono } = req.body;
+    const { nombres, apellidos, dni, telefono, correo, contraseña } = req.body;
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(contraseña, salt);
+    try {
 
-    database.query(queryUsers.insertClient, [nombres, apellidos, dni, telefono], (error, results) => {
-        if (error) {
-            console.error('Error inserting client:', error);
-            res.status(500).json({ error: 'Error inserting client' });
-        } else {
-            res.status(201).json({ message: 'Client registered successfully', clientId: results.insertId });
-        }
-    });
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = await bcrypt.hash(contraseña, salt);
 
-}
+        const [resultado ]= await database.promise().query(
+            queryUsers.insertClient,
+            [nombres, apellidos, dni, telefono, correo, hashedPassword]
+        );
+
+       
+        res.status(201).json({
+            message: 'Cliente registrado correctamente',
+            resultad : resultado
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+};
 
 export default {
     loginController,

@@ -1,4 +1,4 @@
-const insertClient = 'INSERT INTO cliente (nombres, apellidos, dni , telefono ) VALUES (?, ?, ?, ? )';
+const insertClient = 'INSERT INTO cliente (nombres, apellidos, dni , telefono, correo, contrasenia ) VALUES (?, ?, ?, ? , ?, ? )';
 
 const showClients = 'SELECT * FROM cliente WHERE 1=1';
 
@@ -13,7 +13,6 @@ const showProductsByOrderId = 'SELECT ped.id_pedido , prod.nombre AS nombre_prod
 export default {
     insertClient,
     showClients,
-
     showOrdersByClientId,
     showProductsByOrderId
 }
