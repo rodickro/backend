@@ -1,9 +1,0 @@
-
-
-
-DB_HOST = localhost
-DB_PORT = 27017
-DB_NAME = db_ventas_online_final
-DB_USER = root
-DB_PASSWORD = Admin123!
-
