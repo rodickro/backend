@@ -12,7 +12,13 @@ const detailsController = async (req, res) => {
             [id_producto]
         );
 
-        res.json(details);
+
+        const [variants] = await database.promise().query(query.showVariants, [id_producto])
+
+        res.json({
+            detalles: details,
+            variantes: variants
+        });
 
     } catch (error) {
 

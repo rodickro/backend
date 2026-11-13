@@ -29,7 +29,6 @@ const callAllProducts = async (req, res) => {
             queryParams.push(marca);
         }
         const [products] = await database.promise().query(selectProductsQuery, queryParams);
-        console.log('Retrieved products:', products);
         res.json(products);
 
     } catch (error) {
