@@ -1,4 +1,3 @@
-import database from "../database.js";
 
 const sqlCreateReserva = `
     INSERT INTO reserva
@@ -6,20 +5,24 @@ const sqlCreateReserva = `
     VALUES (?, ?)
 `;
 
-const reservar = async (iddetallecarrito, cantidad) => {
+const reservar = async (connection, iddetallecarrito, cantidad) => {
+
     try {
 
-        const [resultado] = await database.promise().query(
+        const [resultado] = await connection.query(
             sqlCreateReserva,
             [iddetallecarrito, cantidad]
         );
 
-        return resultado.affectedRows > 0;
+        return {
+            exitoso: resultado.affectedRows > 0,
+            id_reserva: resultado.insertId
+        };
 
     } catch (error) {
 
         console.error('Error al crear la reserva:', error);
-        return false;
+        throw error;
 
     }
 };

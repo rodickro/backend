@@ -1,4 +1,7 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const verificarToken = (req, res, next) => {
 
@@ -14,16 +17,13 @@ const verificarToken = (req, res, next) => {
 
     try {
 
-        const usuario = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
+        const usuario = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = usuario;
 
         next();
-
-    } catch (error) {
+    }
+    catch (error) {
 
         return res.status(401).json({
             mensaje: 'Token inválido o expirado'

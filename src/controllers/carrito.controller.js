@@ -1,6 +1,6 @@
 
 import database from "../database.js";
-import queryCar from '../sql/carrito.js';
+import queryCar from "../sql/carrito.js";
 import reservar from "../utils/createReserva.js";
 
 const INcarritoController = async (req, res) => {
@@ -8,26 +8,28 @@ const INcarritoController = async (req, res) => {
     const { id_variante, cantidad } = req.body;
     const id_cliente = req.user.id_cliente;
 
-    const db = database.promise();
+    const connection = await database.promise().getConnection();
 
     try {
 
-        await db.beginTransaction();
+        await connection.beginTransaction();
 
-        const [carritos] = await db.query(
+        // 1. Buscar carrito activo del cliente
+        const [carritos] = await connection.query(
             queryCar.selectCar,
             [id_cliente]
         );
 
         let id_carrito;
 
+        // 2. Crear carrito si no existe
         if (carritos.length > 0) {
 
             id_carrito = carritos[0].id_carrito;
 
         } else {
 
-            const [resultado] = await db.query(
+            const [resultado] = await connection.query(
                 queryCar.insertCar,
                 [id_cliente]
             );
@@ -35,30 +37,31 @@ const INcarritoController = async (req, res) => {
             id_carrito = resultado.insertId;
         }
 
-
-        const [detallecarrito] = await db.query(
+        // 3. Insertar detalle del carrito
+        const [detallecarrito] = await connection.query(
             queryCar.insertCarDetail,
             [id_carrito, id_variante, cantidad]
         );
 
         const id_detallecarrito = detallecarrito.insertId;
 
-
+        // 4. Crear reserva usando la misma conexión
         const resultadoReserva = await reservar(
+            connection,
             id_detallecarrito,
             cantidad
         );
 
         if (!resultadoReserva.exitoso) {
-            throw new Error('No se pudo crear la reserva');
+            throw new Error("No se pudo crear la reserva");
         }
 
-        console.log('Reserva creada:', resultadoReserva.id_reserva);
-
-        await db.commit();
+        // 5. Confirmar transacción
+        await connection.commit();
 
         return res.status(201).json({
             message: 'Producto agregado y reservado correctamente',
+            id_cliente,
             id_carrito,
             id_detallecarrito,
             id_reserva: resultadoReserva.id_reserva,
@@ -68,28 +71,32 @@ const INcarritoController = async (req, res) => {
 
     } catch (error) {
 
-        await db.rollback();
+        await connection.rollback();
 
-        console.error(error);
+        console.error("Error al agregar al carrito:", error);
 
         return res.status(500).json({
-            message: error.message || 'Error al agregar producto al carrito'
+            message: error.message || "Error al agregar producto al carrito"
         });
+
+    } finally {
+
+        connection.release();
+
     }
 };
 
 
-
-
+// Mostrar carrito
 const OUTcarritoController = async (req, res) => {
 
-    const IDcliente = req.user.id_cliente;
+    const id_cliente = req.user.id_cliente;
 
     try {
 
         const [resultados] = await database.promise().query(
             queryCar.ShowCarrito,
-            [IDcliente]
+            [id_cliente]
         );
 
         return res.status(200).json({
@@ -110,4 +117,4 @@ const OUTcarritoController = async (req, res) => {
 export default {
     INcarritoController,
     OUTcarritoController
-}
+};

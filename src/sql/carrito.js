@@ -1,6 +1,6 @@
-const selectCar = 'SELECT id_carrito FROM carrito WHERE id_usuario = ? AND estado = "activo"';
+const selectCar = 'SELECT id_carrito FROM carrito WHERE id_cliente = ? AND estado = "activo"';
 
-const insertCar = ' INSERT INTO carrito (id_usuario, fecha_creacion, estado) VALUES (?, NOW(), "activo")';
+const insertCar = ' INSERT INTO carrito (id_cliente, fecha_creacion, estado) VALUES (?, NOW(), "activo")';
 
 const insertCarDetail = 'INSERT INTO detallecarrito (id_carrito, id_variante, cantidad) VALUES (?, ?, ?)';
 

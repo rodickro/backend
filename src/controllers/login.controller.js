@@ -1,6 +1,9 @@
 import database from '../database.js';
 import queryUsers from '../sql/users.js';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 import bcrypt from 'bcrypt';
@@ -39,11 +42,12 @@ const loginController = async (req, res) => {
             {
                 id_cliente: correos[0].id_cliente
             },
-            "wefgdserwrwerwerw",
+            process.env.JWT_SECRET,
             {
                 expiresIn: '2h'
             }
         );
+        console.log('Login SECRET:', process.env.JWT_SECRET);
 
         return res.status(200).json({
             mensaje: 'Inicio de sesión exitoso',
